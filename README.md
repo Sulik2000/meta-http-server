@@ -31,4 +31,4 @@ meta-http-server/
 │           └── static/         # HTML/CSS/JS assets
 ```
 ### Demo
-!(recipes-http-server/http-server/code/static/demo.gif)
+![Demonstrating](recipes-http-server/http-server/code/static/demo.gif)
