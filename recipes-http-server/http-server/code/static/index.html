@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STM32 LED Control</title>
+    <style>
+        /* --- CSS (Стилі) --- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212; /* Темний фон */
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #1e1e1e;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        h1 { margin-bottom: 20px; font-size: 1.5rem; }
+
+        .status {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            color: #aaaaaa;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        button {
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+            width: 100px;
+        }
+
+        button:active { transform: scale(0.95); }
+        
+        /* Кнопка ON - Зелена */
+        .btn-on {
+            background-color: #2e7d32;
+            color: white;
+            box-shadow: 0 0 10px rgba(46, 125, 50, 0.5);
+        }
+        .btn-on:hover { background-color: #388e3c; }
+
+        /* Кнопка OFF - Червона */
+        .btn-off {
+            background-color: #c62828;
+            color: white;
+            box-shadow: 0 0 10px rgba(198, 40, 40, 0.5);
+        }
+        .btn-off:hover { background-color: #d32f2f; }
+
+        /* Анімація завантаження */
+        .loading { opacity: 0.5; pointer-events: none; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>STM32 Control Panel</h1>
+        
+        <div id="statusText" class="status">Очікування дії...</div>
+
+        <div class="btn-group">
+            <button class="btn-on" onclick="sendLedRequest(1)">ON</button>
+            <button class="btn-off" onclick="sendLedRequest(0)">OFF</button>
+        </div>
+    </div>
+
+    <script>
+        /* --- JavaScript (Логіка) --- */
+        
+        function sendLedRequest(state) {
+            // Формуємо URL: /led?on=1 або /led?on=0
+            const url = `/led?on=${state}`;
+            
+            const statusText = document.getElementById('statusText');
+            statusText.innerText = "Відправка...";
+            statusText.style.color = "#ffeb3b"; // Жовтий колір
+
+            // Використовуємо fetch для GET запиту без перезавантаження
+            fetch(url, { method: 'GET' })
+                .then(response => {
+                    if (response.ok) {
+                        statusText.innerText = state === 1 ? "Світлодіод УВІМКНЕНО" : "Світлодіод ВИМКНЕНО";
+                        statusText.style.color = state === 1 ? "#4caf50" : "#f44336"; // Зелений або червоний
+                    } else {
+                        statusText.innerText = "Помилка сервера!";
+                        statusText.style.color = "red";
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    statusText.innerText = "Помилка з'єднання!";
+                    statusText.style.color = "red";
+                });
+        }
+    </script>
+</body>
+</html>
